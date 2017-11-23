@@ -36,12 +36,12 @@ def timeNow():
     return datetime.now()
 
 
-def create_tables():
+def createTables():
     db.create_tables([UserSettings], True)
 
 
-UserSettings.addUser(chat_id='12345', filter_settings='Z',
-                     create_date=datetime.now())
+# UserSettings.addUser(chat_id='12345', filter_settings='Z',
+    # create_date=datetime.now())
 
 # UserSettings.updateUserSettings(chat_id='12345', filter_settings='G')
 # UserSettings.create(chat_id=1234565, filter_settings='N',
