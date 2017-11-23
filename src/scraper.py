@@ -1,5 +1,4 @@
 import pandas as pd
-from prettytable import from_csv
 
 URL = 'https://coinmarketcap.com/gainers-losers/'
 
@@ -22,8 +21,6 @@ def cleanDataFrame(data_frame):
     df = data_frame.copy()
     df.columns = ['#', 'Name', 'Symbol', 'Volume', 'Price', 'Pct']
 
-    df.set_index('#', inplace=True)
-
     df['Name'] = df['Name'].astype(str)
     df['Symbol'] = df['Symbol'].astype(str)
     df['Volume'] = df['Volume'].apply(cleanStrings).astype(int)
@@ -45,9 +42,11 @@ volume_250000 = {}
 volume_500000 = {}
 volume_1000000 = {}
 for key, df in gainers_losers.items():
-    volume_25000[key] = filterByVolume(df).to_string()
-    volume_100000[key] = filterByVolume(df, min_volume=100000).to_json()
+    volume_25000[key] = filterByVolume(df).to_string(
+        columns=['#', 'Symbol', 'Pct', 'Volume', 'Price'], index=False)
+    volume_100000[key] = filterByVolume(df, min_volume=100000).to_html()
     volume_250000[key] = filterByVolume(df, min_volume=250000).to_json()
     volume_500000[key] = filterByVolume(df, min_volume=500000).to_json()
     volume_1000000[key] = filterByVolume(df, min_volume=1000000).to_json()
+
 print(volume_25000['losers_7d'])
