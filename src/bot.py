@@ -32,27 +32,82 @@ def settings(bot, update):
     replymarkup = telegram.ReplyKeyboardMarkup(
         [buttons2], resize_keyboard=True, one_time_keyboard=True)
 
-    message = 'Change Minimum Volume Filter\nA:$25,000\nB:$100,000\nC:$250,000\nD:$500,000\nE:$1,000,000'
+    message = 'Change Minimum Volume Filter\nA:$25,000\nB:$100,000\nC:$250,000\nD:$500,000\nE:$1,000,000\nN:NoFilter'
 
     bot.sendMessage(update.message.chat_id, text=message,
                     reply_markup=replymarkup)
 
 
-def A(bot, update):
-    _logger.info('chat_id: {}, user: {}, Changed Filter Settings to A'.format(
-        update.message.chat_id, bot.get_chat(update.message.chat_id)['username']))
+def changeFilterA(bot, update):
+    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to A'
+
+    _logger.info(message_str.format(update.message.chat_id,
+                                    bot.get_chat(update.message.chat_id)['username']))
+
     message = 'All coins will be filter by a minimum of $25,000.'
     bot.sendMessage(update.message.chat_id, text=message)
+
+
+def changeFilterB(bot, update):
+    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to B'
+
+    _logger.info(message_str.format(update.message.chat_id,
+                                    bot.get_chat(update.message.chat_id)['username']))
+
+    message = 'All coins will be filter by a minimum of $100,000.'
+    bot.sendMessage(update.message.chat_id, text=message)
+
+
+def changeFilterC(bot, update):
+    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to C'
+
+    _logger.info(message_str.format(update.message.chat_id,
+                                    bot.get_chat(update.message.chat_id)['username']))
+
+    message = 'All coins will be filter by a minimum of $250,000.'
+    bot.sendMessage(update.message.chat_id, text=message)
+
+
+def changeFilterD(bot, update):
+    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to D'
+
+    _logger.info(message_str.format(update.message.chat_id,
+                                    bot.get_chat(update.message.chat_id)['username']))
+
+    message = 'All coins will be filter by a minimum of $500,000.'
+    bot.sendMessage(update.message.chat_id, text=message)
+
+
+def changeFilterE(bot, update):
+    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to E'
+
+    _logger.info(message_str.format(update.message.chat_id,
+                                    bot.get_chat(update.message.chat_id)['username']))
+
+    message = 'All coins will be filter by a minimum of $1,000,000.'
+    bot.sendMessage(update.message.chat_id, text=message)
+
+
+def changeFilterN(bot, update):
+    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to N'
+
+    _logger.info(message_str.format(update.message.chat_id,
+                                    bot.get_chat(update.message.chat_id)['username']))
+
+    message = 'All coins will be unfiltered'
+    bot.sendMessage(update.message.chat_id, text=message)
+
 
 updater = Updater(GetToken())
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('settings', settings))
-updater.dispatcher.add_handler(CommandHandler('(A)', A))
-# updater.dispatcher.add_handler(CommandHandler('(B)'), print('Filter B'))
-# updater.dispatcher.add_handler(CommandHandler('(C)'), print('Filter C'))
-# updater.dispatcher.add_handler(CommandHandler('(D)'), print('Filter D'))
-# updater.dispatcher.add_handler(CommandHandler('(E)'), print('Filter E'))
+updater.dispatcher.add_handler(CommandHandler('(A)', changeFilterA))
+updater.dispatcher.add_handler(CommandHandler('(B)', changeFilterB))
+updater.dispatcher.add_handler(CommandHandler('(C)', changeFilterC))
+updater.dispatcher.add_handler(CommandHandler('(D)', changeFilterD))
+updater.dispatcher.add_handler(CommandHandler('(E)', changeFilterE))
+updater.dispatcher.add_handler(CommandHandler('(N)', changeFilterN))
 
 updater.start_polling()
 updater.idle()
