@@ -4,6 +4,8 @@ from gettoken import GetToken
 import telegram
 from telegram.ext import Updater, CommandHandler
 
+from model import UserSettings, createTables
+
 _logger = getLogger()
 
 
@@ -19,12 +21,21 @@ buttons2 = [telegram.KeyboardButton('/(A)'),
             telegram.KeyboardButton('/(N)')]
 
 
+def getUserID(update):
+    return update.message.chat_id
+
+
+def getUserName(bot, update):
+    return bot.get_chat(getUserID(update))['username']
+
+
 def start(bot, update):
     replymarkup = telegram.ReplyKeyboardMarkup(
         [buttons], resize_keyboard=True, one_time_keyboard=True)
-    message = 'Welcom test message.'
 
-    bot.sendMessage(update.message.chat_id, text=message,
+    message = 'Welcome test message.'
+
+    bot.sendMessage(getUserID(update), text=message,
                     reply_markup=replymarkup)
 
 
@@ -34,68 +45,51 @@ def settings(bot, update):
 
     message = 'Change Minimum Volume Filter\nA:$25,000\nB:$100,000\nC:$250,000\nD:$500,000\nE:$1,000,000\nN:NoFilter'
 
-    bot.sendMessage(update.message.chat_id, text=message,
+    bot.sendMessage(getUserID(update), text=message,
                     reply_markup=replymarkup)
 
 
+def baseFilter(bot, update, log_str, message):
+    _logger.info(log_str.format(
+        getUserID(update), getUserName(bot, update)))
+
+    bot.sendMessage(getUserID(update), text=message)
+
+
 def changeFilterA(bot, update):
-    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to A'
-
-    _logger.info(message_str.format(update.message.chat_id,
-                                    bot.get_chat(update.message.chat_id)['username']))
-
+    log_str = 'chat_id: {}, user: {}, Changed Filter Settings to A'
     message = 'All coins will be filter by a minimum of $25,000.'
-    bot.sendMessage(update.message.chat_id, text=message)
+    baseFilter(bot, update, log_str, message)
 
 
 def changeFilterB(bot, update):
-    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to B'
-
-    _logger.info(message_str.format(update.message.chat_id,
-                                    bot.get_chat(update.message.chat_id)['username']))
-
+    log_str = 'chat_id: {}, user: {}, Changed Filter Settings to B'
     message = 'All coins will be filter by a minimum of $100,000.'
-    bot.sendMessage(update.message.chat_id, text=message)
+    baseFilter(bot, update, log_str, message)
 
 
 def changeFilterC(bot, update):
-    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to C'
-
-    _logger.info(message_str.format(update.message.chat_id,
-                                    bot.get_chat(update.message.chat_id)['username']))
-
+    log_str = 'chat_id: {}, user: {}, Changed Filter Settings to C'
     message = 'All coins will be filter by a minimum of $250,000.'
-    bot.sendMessage(update.message.chat_id, text=message)
+    baseFilter(bot, update, log_str, message)
 
 
 def changeFilterD(bot, update):
-    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to D'
-
-    _logger.info(message_str.format(update.message.chat_id,
-                                    bot.get_chat(update.message.chat_id)['username']))
-
+    log_str = 'chat_id: {}, user: {}, Changed Filter Settings to D'
     message = 'All coins will be filter by a minimum of $500,000.'
-    bot.sendMessage(update.message.chat_id, text=message)
+    baseFilter(bot, update, log_str, message)
 
 
 def changeFilterE(bot, update):
-    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to E'
-
-    _logger.info(message_str.format(update.message.chat_id,
-                                    bot.get_chat(update.message.chat_id)['username']))
-
+    log_str = 'chat_id: {}, user: {}, Changed Filter Settings to E'
     message = 'All coins will be filter by a minimum of $1,000,000.'
-    bot.sendMessage(update.message.chat_id, text=message)
+    baseFilter(bot, update, log_str, message)
 
 
 def changeFilterN(bot, update):
-    message_str = 'chat_id: {}, user: {}, Changed Filter Settings to N'
-
-    _logger.info(message_str.format(update.message.chat_id,
-                                    bot.get_chat(update.message.chat_id)['username']))
-
+    log_str = 'chat_id: {}, user: {}, Changed Filter Settings to N'
     message = 'All coins will be unfiltered'
-    bot.sendMessage(update.message.chat_id, text=message)
+    baseFilter(bot, update, log_str, message)
 
 
 updater = Updater(GetToken())
