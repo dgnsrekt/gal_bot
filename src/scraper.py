@@ -48,5 +48,3 @@ for key, df in gainers_losers.items():
     volume_250000[key] = filterByVolume(df, min_volume=250000).to_json()
     volume_500000[key] = filterByVolume(df, min_volume=500000).to_json()
     volume_1000000[key] = filterByVolume(df, min_volume=1000000).to_json()
-
-print(volume_25000['losers_7d'])
