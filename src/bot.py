@@ -15,7 +15,8 @@ buttons2 = [telegram.KeyboardButton('/(A)'),
             telegram.KeyboardButton('/(B)'),
             telegram.KeyboardButton('/(C)'),
             telegram.KeyboardButton('/(D)'),
-            telegram.KeyboardButton('/(E)')]
+            telegram.KeyboardButton('/(E)'),
+            telegram.KeyboardButton('/(N)')]
 
 
 def start(bot, update):
