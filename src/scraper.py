@@ -1,16 +1,17 @@
 import pandas as pd
-
+from prettytable import from_csv
 
 URL = 'https://coinmarketcap.com/gainers-losers/'
 
 gainers_losers_dataframe = pd.read_html(URL)
 
-# gainers_1h = gainers_losers_dataframe[0]
-# gainers_7d = gainers_losers_dataframe[1]
-# gainers_24h = gainers_losers_dataframe[2]
-# losers_1h = gainers_losers_dataframe[3]
-# losers_7d = gainers_losers_dataframe[4]
-# losers_24h = gainers_losers_dataframe[5]
+gainers_losers = {
+    'gainers_1h': gainers_losers_dataframe[0],
+    'gainers_7d': gainers_losers_dataframe[1],
+    'gainers_24h': gainers_losers_dataframe[2],
+    'losers_1h': gainers_losers_dataframe[3],
+    'losers_7d': gainers_losers_dataframe[4],
+    'losers_24h': gainers_losers_dataframe[5]}
 
 
 def cleanStrings(stringObj):
@@ -21,6 +22,8 @@ def cleanDataFrame(data_frame):
     df = data_frame.copy()
     df.columns = ['#', 'Name', 'Symbol', 'Volume', 'Price', 'Pct']
 
+    df.set_index('#', inplace=True)
+
     df['Name'] = df['Name'].astype(str)
     df['Symbol'] = df['Symbol'].astype(str)
     df['Volume'] = df['Volume'].apply(cleanStrings).astype(int)
@@ -28,5 +31,23 @@ def cleanDataFrame(data_frame):
     df['Pct'] = df['Pct'].apply(cleanStrings).astype(float)
     return df
 
-for df in gainers_losers_dataframe:
-    print(cleanDataFrame(df))
+for key, df in gainers_losers.items():
+    gainers_losers[key] = cleanDataFrame(df)
+
+
+def filterByVolume(data_frame, min_volume=25000):
+    df = data_frame.copy()
+    return df[data_frame.Volume > min_volume]
+
+volume_25000 = {}
+volume_100000 = {}
+volume_250000 = {}
+volume_500000 = {}
+volume_1000000 = {}
+for key, df in gainers_losers.items():
+    volume_25000[key] = filterByVolume(df).to_string()
+    volume_100000[key] = filterByVolume(df, min_volume=100000).to_json()
+    volume_250000[key] = filterByVolume(df, min_volume=250000).to_json()
+    volume_500000[key] = filterByVolume(df, min_volume=500000).to_json()
+    volume_1000000[key] = filterByVolume(df, min_volume=1000000).to_json()
+print(volume_25000['losers_7d'])
