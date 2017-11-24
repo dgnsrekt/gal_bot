@@ -1,7 +1,7 @@
 from logger import getLogger
 import pickle
 import pandas as pd
-from os import path
+from os import path, makedirs
 
 _logger = getLogger()
 
@@ -113,5 +113,10 @@ def getDataFromPickle(filter):
 
 
 if __name__ == '__main__':
+    try:
+        makedirs(PICKLE_PATH)
+    except FileExistsError:
+        _logger.info('{} already exists.'.format(PICKLE_PATH))
+
     data = getFilteredVolumeData()
     sendDataToPickle(data)
