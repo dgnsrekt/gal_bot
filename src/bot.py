@@ -29,11 +29,21 @@ def getUserName(bot, update):
     return bot.get_chat(getUserID(update))['username']
 
 
+def addUserToDatabase(bot, update):
+    UserSettings.addUser(chat_id=getUserID(update), filter_settings='N')
+
+
+def updateUserDatbase(bot, update, setting):
+    UserSettings.updateUserSettings(
+        chat_id=getUserID(update), filter_settings=setting)
+
+
 def start(bot, update):
     replymarkup = telegram.ReplyKeyboardMarkup(
         [buttons], resize_keyboard=True, one_time_keyboard=True)
 
     message = 'Welcome test message.'
+    addUserToDatabase(bot, update)
 
     bot.sendMessage(getUserID(update), text=message,
                     reply_markup=replymarkup)
@@ -49,7 +59,8 @@ def settings(bot, update):
                     reply_markup=replymarkup)
 
 
-def baseFilter(bot, update, log_str, message):
+def baseFilter(bot, update, log_str, message, filter_setting):
+    updateUserDatbase(bot, update, filter_setting)
     _logger.info(log_str.format(
         getUserID(update), getUserName(bot, update)))
 
@@ -59,37 +70,37 @@ def baseFilter(bot, update, log_str, message):
 def changeFilterA(bot, update):
     log_str = 'chat_id: {}, user: {}, Changed Filter Settings to A'
     message = 'All coins will be filter by a minimum of $25,000.'
-    baseFilter(bot, update, log_str, message)
+    baseFilter(bot, update, log_str, message, 'A')
 
 
 def changeFilterB(bot, update):
     log_str = 'chat_id: {}, user: {}, Changed Filter Settings to B'
     message = 'All coins will be filter by a minimum of $100,000.'
-    baseFilter(bot, update, log_str, message)
+    baseFilter(bot, update, log_str, message, 'B')
 
 
 def changeFilterC(bot, update):
     log_str = 'chat_id: {}, user: {}, Changed Filter Settings to C'
     message = 'All coins will be filter by a minimum of $250,000.'
-    baseFilter(bot, update, log_str, message)
+    baseFilter(bot, update, log_str, message, 'C')
 
 
 def changeFilterD(bot, update):
     log_str = 'chat_id: {}, user: {}, Changed Filter Settings to D'
     message = 'All coins will be filter by a minimum of $500,000.'
-    baseFilter(bot, update, log_str, message)
+    baseFilter(bot, update, log_str, message, 'D')
 
 
 def changeFilterE(bot, update):
     log_str = 'chat_id: {}, user: {}, Changed Filter Settings to E'
     message = 'All coins will be filter by a minimum of $1,000,000.'
-    baseFilter(bot, update, log_str, message)
+    baseFilter(bot, update, log_str, message, 'E')
 
 
 def changeFilterN(bot, update):
     log_str = 'chat_id: {}, user: {}, Changed Filter Settings to N'
     message = 'All coins will be unfiltered'
-    baseFilter(bot, update, log_str, message)
+    baseFilter(bot, update, log_str, message, 'N')
 
 
 updater = Updater(GetToken())
