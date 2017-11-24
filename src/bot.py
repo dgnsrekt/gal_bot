@@ -153,25 +153,27 @@ def losers(bot, update):
     message += loseData['gainers_7d'] + '\n\n'
     bot.sendMessage(getUserID(update), text=message)
 
-updater = Updater(GetToken())
 
-updater.dispatcher.add_handler(CommandHandler('start', start))
-updater.dispatcher.add_handler(CommandHandler('settings', settings))
-updater.dispatcher.add_handler(CommandHandler('menu', menu))
+def main():
+    createTables()
+    updater = Updater(GetToken())
 
-updater.dispatcher.add_handler(CommandHandler('gainers', gainers))
-updater.dispatcher.add_handler(CommandHandler('losers', losers))
+    updater.dispatcher.add_handler(CommandHandler('start', start))
+    updater.dispatcher.add_handler(CommandHandler('settings', settings))
+    updater.dispatcher.add_handler(CommandHandler('menu', menu))
 
-updater.dispatcher.add_handler(CommandHandler('(A)', changeFilterA))
-updater.dispatcher.add_handler(CommandHandler('(B)', changeFilterB))
-updater.dispatcher.add_handler(CommandHandler('(C)', changeFilterC))
-updater.dispatcher.add_handler(CommandHandler('(D)', changeFilterD))
-updater.dispatcher.add_handler(CommandHandler('(E)', changeFilterE))
-updater.dispatcher.add_handler(CommandHandler('(N)', changeFilterN))
+    updater.dispatcher.add_handler(CommandHandler('gainers', gainers))
+    updater.dispatcher.add_handler(CommandHandler('losers', losers))
 
-updater.start_polling()
-updater.idle()
+    updater.dispatcher.add_handler(CommandHandler('(A)', changeFilterA))
+    updater.dispatcher.add_handler(CommandHandler('(B)', changeFilterB))
+    updater.dispatcher.add_handler(CommandHandler('(C)', changeFilterC))
+    updater.dispatcher.add_handler(CommandHandler('(D)', changeFilterD))
+    updater.dispatcher.add_handler(CommandHandler('(E)', changeFilterE))
+    updater.dispatcher.add_handler(CommandHandler('(N)', changeFilterN))
+
+    updater.start_polling()
+    updater.idle()
 
 
-# TODO ADD MENU FUNCTION FOR EASE OF USE
 # ADD ERROR FUNCTION
