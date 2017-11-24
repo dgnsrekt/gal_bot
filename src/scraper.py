@@ -66,23 +66,25 @@ def getFilteredVolumeData():
     volume_1000000 = {}
 
     for key, df in temp_df.items():
+        columnFormat = ['#', 'Symbol', 'Pct', 'Volume', 'Price']
+
         volume_NF[key] = filterByVolume(
-            df, min_volume=0).to_string(index=False)
+            df, min_volume=0).to_string(index=False, columns=columnFormat)
 
         volume_25000[key] = filterByVolume(
-            df, min_volume=25000).to_string(index=False)
+            df, min_volume=25000).to_string(index=False, columns=columnFormat)
 
         volume_100000[key] = filterByVolume(
-            df, min_volume=100000).to_string(index=False)
+            df, min_volume=100000).to_string(index=False, columns=columnFormat)
 
         volume_250000[key] = filterByVolume(
-            df, min_volume=250000).to_string(index=False)
+            df, min_volume=250000).to_string(index=False, columns=columnFormat)
 
         volume_500000[key] = filterByVolume(
-            df, min_volume=500000).to_string(index=False)
+            df, min_volume=500000).to_string(index=False, columns=columnFormat)
 
         volume_1000000[key] = filterByVolume(
-            df, min_volume=1000000).to_string(index=False)
+            df, min_volume=1000000).to_string(index=False, columns=columnFormat)
 
     return {'A': volume_25000,
             'B': volume_100000,
