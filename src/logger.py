@@ -1,6 +1,6 @@
-from logging import basicConfig, INFO, CRITICAL, getLogger, StreamHandler
+from logging import basicConfig, INFO, StreamHandler
 from datetime import datetime
-from os import listdir, makedirs, path, remove, getenv
+from os import listdir, makedirs, path, remove
 from sys import stdout
 
 # Gets basepath of the file
@@ -55,6 +55,7 @@ def generateLogger():
     logger = getLogger(__name__)
     logger.addHandler(ch)
     return logger
+
 
 LOGGER = generateLogger()
 
