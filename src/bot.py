@@ -5,6 +5,7 @@ import telegram
 from telegram.ext import Updater, CommandHandler
 
 from model import UserSettings, createTables
+from scraper import getDataFromPickle
 
 _logger = getLogger()
 
@@ -50,6 +51,7 @@ def start(bot, update):
     message += '/start - reset settings\n' + '/menu\t-\tMain Menu\n'
     message += '/settings\t-\tFilter Settings\n' + '/gainers\t-\t1h, 24h, 7D\n'
     message += '/losers\t-\t1h, 24h, 7D\n'
+    message += 'Donate BTC 15RY6hGpVhqxB2pDaq551psxWQjrTn8HFj'
     addUserToDatabase(bot, update)
 
     bot.sendMessage(getUserID(update), text=message,
@@ -73,6 +75,7 @@ def menu(bot, update):
     message = '/menu\t-\tMain Menu\n'
     message += '/settings\t-\tFilter Settings\n' + '/gainers\t-\t1h, 24h, 7D\n'
     message += '/losers\t-\t1h, 24h, 7D\n'
+    message += 'Donate BTC 15RY6hGpVhqxB2pDaq551psxWQjrTn8HFj'
 
     bot.sendMessage(getUserID(update), text=message,
                     reply_markup=replymarkup)
@@ -126,12 +129,29 @@ def changeFilterN(bot, update):
 
 
 def gainers(bot, update):
-    pass
+    filterSetting = getUserSettingFromDatabase(bot, update)
+    gainData = getDataFromPickle(filterSetting)
+
+    message = 'Biggest Gainers Last Hour' + '\n\n'
+    message += gainData['gainers_1h'] + '\n\n'
+    message += 'Biggest Gainers Last 24 Hours' + '\n\n'
+    message += gainData['gainers_24h'] + '\n\n'
+    message += 'Biggest Gainers Last 7 Days' + '\n\n'
+    message += gainData['gainers_7d'] + '\n\n'
+    bot.sendMessage(getUserID(update), text=message)
 
 
 def losers(bot, update):
-    pass
+    filterSetting = getUserSettingFromDatabase(bot, update)
+    loseData = getDataFromPickle(filterSetting)
 
+    message = 'Biggest Losers Last Hour' + '\n\n'
+    message += loseData['gainers_1h'] + '\n\n'
+    message = 'Biggest Losers Last 24 Hours' + '\n\n'
+    message += loseData['gainers_24h'] + '\n\n'
+    message = 'Biggest Losers Last 7 Days' + '\n\n'
+    message += loseData['gainers_7d'] + '\n\n'
+    bot.sendMessage(getUserID(update), text=message)
 
 updater = Updater(GetToken())
 
