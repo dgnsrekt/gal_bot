@@ -1,4 +1,4 @@
-from logging import basicConfig, INFO, StreamHandler
+from logging import basicConfig, INFO, StreamHandler, getLogger
 from datetime import datetime
 from os import listdir, makedirs, path, remove
 from sys import stdout
