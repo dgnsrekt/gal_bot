@@ -62,7 +62,8 @@ def settings(bot, update):
     replymarkup = telegram.ReplyKeyboardMarkup(
         [buttons2], resize_keyboard=True, one_time_keyboard=True)
 
-    message = 'Change Minimum Volume Filter\nA:$25,000\nB:$100,000\nC:$250,000\nD:$500,000\nE:$1,000,000\nN:NoFilter'
+    message = 'Change Minimum Volume Filter\nA:$25,000\nB:$100,000\n'
+    message += 'C:$250,000\nD:$500,000\nE:$1,000,000\nN:NoFilter'
 
     bot.sendMessage(getUserID(update), text=message,
                     reply_markup=replymarkup)
