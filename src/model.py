@@ -39,6 +39,9 @@ class UserSettings(BaseModel):
         query.execute()
         _logger.info('User {} updated in database.'.format(kwargs['chat_id']))
 
+    def getUserSettings(**kwargs):
+        return UserSettings.get(UserSettings.chat_id == kwargs['chat_id']).filter_settings
+
 
 def timeNow():
     return datetime.now()
@@ -46,18 +49,3 @@ def timeNow():
 
 def createTables():
     db.create_tables([UserSettings], True)
-
-
-# UserSettings.addUser(chat_id='12345', filter_settings='Z',
-    # create_date=datetime.now())
-
-# UserSettings.updateUserSettings(chat_id='12345', filter_settings='G')
-# UserSettings.create(chat_id=1234565, filter_settings='N',
-#                     create_date=datetime.now(), last_updated=datetime.now())
-
-# print(UserSettings.select().where(
-#     UserSettings.chat_id == 1234565))
-
-# query = UserSettings.update(filter_settings='C', last_updated=datetime.now()).where(
-#     UserSettings.chat_id == 1234565)
-# query.execute()
