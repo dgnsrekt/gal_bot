@@ -1,4 +1,12 @@
+from logger import getLogger
+import pickle
 import pandas as pd
+from os import path
+
+_logger = getLogger()
+
+BASE_PATH = path.dirname(path.abspath(__file__))
+PICKLE_PATH = path.join(BASE_PATH, 'pickles')
 
 URL = 'https://coinmarketcap.com/gainers-losers/'
 
@@ -13,6 +21,8 @@ def parseSite(url=URL):
         'losers_1h': gainers_losers_dataframe[3],
         'losers_7d': gainers_losers_dataframe[4],
         'losers_24h': gainers_losers_dataframe[5]}
+    _logger.info('Data parsed from {}'.format(url))
+
     return gainers_losers
 
 
@@ -81,7 +91,27 @@ def getFilteredVolumeData():
             'E': volume_1000000,
             'N': volume_NF}
 
-if __name__ == '__main__':
-    daba = getFilteredVolumeData()
 
-    print(daba['D']['gainers_1h'])
+def createDataPickle(name, data):
+    filename = path.join(PICKLE_PATH, name + '.pickle')
+    with open(filename, 'wb') as file:
+        pickle.dump(data, file)
+    _logger.info('{} created.'.format(filename))
+
+
+def sendDataToPickle(data):
+    for x in data:
+        createDataPickle(x, data[x])
+
+
+def getDataFromPickle(filter):
+    filename = path.join(PICKLE_PATH, filter.upper() + '.pickle')
+    with open(filename, 'rb') as file:
+        data = pickle.load(file)
+    _logger.info('Pulled data from {}.'.format(filename))
+    return data
+
+
+if __name__ == '__main__':
+    data = getFilteredVolumeData()
+    sendDataToPickle(data)

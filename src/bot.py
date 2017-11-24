@@ -38,6 +38,10 @@ def updateUserDatbase(bot, update, setting):
         chat_id=getUserID(update), filter_settings=setting)
 
 
+def getUserSettingFromDatabase(bot, update):
+    return UserSettings.getUserSettings(chat_id=getUserID(update))
+
+
 def start(bot, update):
     replymarkup = telegram.ReplyKeyboardMarkup(
         [buttons], resize_keyboard=True, one_time_keyboard=True)
@@ -121,11 +125,23 @@ def changeFilterN(bot, update):
     baseFilter(bot, update, log_str, message, 'N')
 
 
+def gainers(bot, update):
+    pass
+
+
+def losers(bot, update):
+    pass
+
+
 updater = Updater(GetToken())
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('settings', settings))
 updater.dispatcher.add_handler(CommandHandler('menu', menu))
+
+updater.dispatcher.add_handler(CommandHandler('gainers', gainers))
+updater.dispatcher.add_handler(CommandHandler('losers', losers))
+
 updater.dispatcher.add_handler(CommandHandler('(A)', changeFilterA))
 updater.dispatcher.add_handler(CommandHandler('(B)', changeFilterB))
 updater.dispatcher.add_handler(CommandHandler('(C)', changeFilterC))
