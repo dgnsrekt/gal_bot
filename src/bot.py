@@ -42,7 +42,10 @@ def start(bot, update):
     replymarkup = telegram.ReplyKeyboardMarkup(
         [buttons], resize_keyboard=True, one_time_keyboard=True)
 
-    message = 'Welcome test message.'
+    message = 'Welcome to the CMC Gainers and Losers bot.\n'
+    message += '/start - reset settings\n' + '/menu\t-\tMain Menu\n'
+    message += '/settings\t-\tFilter Settings\n' + '/gainers\t-\t1h, 24h, 7D\n'
+    message += '/losers\t-\t1h, 24h, 7D\n'
     addUserToDatabase(bot, update)
 
     bot.sendMessage(getUserID(update), text=message,
@@ -59,12 +62,27 @@ def settings(bot, update):
                     reply_markup=replymarkup)
 
 
+def menu(bot, update):
+    replymarkup = telegram.ReplyKeyboardMarkup(
+        [buttons], resize_keyboard=True, one_time_keyboard=True)
+
+    message = '/menu\t-\tMain Menu\n'
+    message += '/settings\t-\tFilter Settings\n' + '/gainers\t-\t1h, 24h, 7D\n'
+    message += '/losers\t-\t1h, 24h, 7D\n'
+
+    bot.sendMessage(getUserID(update), text=message,
+                    reply_markup=replymarkup)
+
+
 def baseFilter(bot, update, log_str, message, filter_setting):
     updateUserDatbase(bot, update, filter_setting)
     _logger.info(log_str.format(
         getUserID(update), getUserName(bot, update)))
 
-    bot.sendMessage(getUserID(update), text=message)
+    replymarkup = telegram.ReplyKeyboardMarkup(
+        [buttons], resize_keyboard=True, one_time_keyboard=True)
+
+    bot.sendMessage(getUserID(update), text=message, reply_markup=replymarkup)
 
 
 def changeFilterA(bot, update):
@@ -107,6 +125,7 @@ updater = Updater(GetToken())
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(CommandHandler('settings', settings))
+updater.dispatcher.add_handler(CommandHandler('menu', menu))
 updater.dispatcher.add_handler(CommandHandler('(A)', changeFilterA))
 updater.dispatcher.add_handler(CommandHandler('(B)', changeFilterB))
 updater.dispatcher.add_handler(CommandHandler('(C)', changeFilterC))
@@ -116,3 +135,7 @@ updater.dispatcher.add_handler(CommandHandler('(N)', changeFilterN))
 
 updater.start_polling()
 updater.idle()
+
+
+# TODO ADD MENU FUNCTION FOR EASE OF USE
+# ADD ERROR FUNCTION
