@@ -1,4 +1,6 @@
-from peewee import *
+from peewee import PostgresqlDatabase, Model
+from peewee import BigIntegerField, CharField, DateTimeField
+from peewee import IntegrityError
 from datetime import datetime
 from logger import getLogger
 
@@ -33,9 +35,10 @@ class UserSettings(BaseModel):
                 'User {} already exists database updated.'.format(kwargs['chat_id']))
 
     def updateUserSettings(**kwargs):
-        user_id_query = kwargs['chat_id']
+        user_id_Q = kwargs['chat_id']
         query = UserSettings.update(filter_settings=kwargs[
-                                    'filter_settings'], last_updated=timeNow()).where(UserSettings.chat_id == user_id_query)
+                                    'filter_settings'],
+                                    last_updated=timeNow()).where(UserSettings.chat_id == user_id_Q)
         query.execute()
         _logger.info('User {} updated in database.'.format(kwargs['chat_id']))
 
