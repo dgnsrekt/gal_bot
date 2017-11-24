@@ -176,4 +176,6 @@ def main():
     updater.idle()
 
 
+if __name__ == '__main__':
+    main()
 # ADD ERROR FUNCTION
