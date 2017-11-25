@@ -142,7 +142,9 @@ def returnFilterMessage(filterSetting):
 
 
 def htmlFixedMessage(message):
-    return '<pre>{}</pre>'.format(message)
+    if 'Empty DataFrame' not in message:
+        return '<pre>{}</pre>'.format(message.replace('Pct', '% Change'))
+    return '<pre>No Data Avaliable</pre>'
 
 
 def gainers(bot, update):
