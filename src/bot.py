@@ -12,7 +12,8 @@ _logger = getLogger()
 
 KEYBOARD_MAIN = [telegram.KeyboardButton('/settings'),
                  telegram.KeyboardButton('/gainers'),
-                 telegram.KeyboardButton('/losers')]
+                 telegram.KeyboardButton('/losers'),
+                 telegram.KeyboardButton('/donate')]
 
 KEYBOARD_SETTINGS = [telegram.KeyboardButton('/(A)'),
                      telegram.KeyboardButton('/(B)'),
@@ -44,10 +45,12 @@ def getUserSettingFromDatabase(bot, update):
 
 
 def returnBasicMessage():
-    message = '/start - reset settings\n' + '/menu\t-\tMain Menu\n'
-    message += '/settings\t-\tFilter Settings\n' + '/gainers\t-\t1h, 24h, 7D\n'
-    message += '/losers\t-\t1h, 24h, 7D\n'
-    message += '/Donate\t-\tIf you like the bot.'
+    message = '/start       - Resets filter settings and initializes bot.\n'
+    message += '/menu     - Main Menu\n'
+    message += '/settings  - Filter Settings\n'
+    message += '/gainers   - Shows 1h, 24h, 7D biggest gainers.\n'
+    message += '/losers     - Shows 1h, 24h, 7D biggest losers.\n'
+    message += '/donate   - If you love the bot.'
     return message
 
 
@@ -59,7 +62,7 @@ def sendMessageWithKeyboard(bot, update, message, keyboard):
 
 
 def start(bot, update):
-    message = 'Welcome to the CMC Gainers and Losers bot.\n'
+    message = 'Welcome to the Biggest Gainers and Losers bot.\n'
     message += returnBasicMessage()
 
     addUserToDatabase(bot, update)
@@ -123,15 +126,30 @@ def changeFilterN(bot, update):
     baseFilter(bot, update, log_str, message, 'N')
 
 
+def returnFilterMessage(filterSetting):
+    message = {'A': '> $25,000',
+               'B': '> $10,0000',
+               'C': '> $25,0000',
+               'D': '> $50,0000',
+               'E': '> $1,000,000',
+               'N': 'No Filter'}
+    return message[filterSetting]
+
+
 def gainers(bot, update):
     filterSetting = getUserSettingFromDatabase(bot, update)
     gainData = getDataFromPickle(filterSetting)
 
-    message = 'Biggest Gainers Last Hour' + '\n\n'
+    message = 'Biggest Gainers Last Hour {}'.format(
+        returnFilterMessage(filterSetting)) + '\n\n'
     message += gainData['gainers_1h'] + '\n\n'
-    message += 'Biggest Gainers Last 24 Hours' + '\n\n'
+
+    message += 'Biggest Gainers Last 24 Hours {}'.format(
+        returnFilterMessage(filterSetting)) + '\n\n'
     message += gainData['gainers_24h'] + '\n\n'
-    message += 'Biggest Gainers Last 7 Days' + '\n\n'
+
+    message += 'Biggest Gainers Last 7 Days {}'.format(
+        returnFilterMessage(filterSetting)) + '\n\n'
     message += gainData['gainers_7d'] + '\n\n'
 
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
@@ -141,12 +159,17 @@ def losers(bot, update):
     filterSetting = getUserSettingFromDatabase(bot, update)
     loseData = getDataFromPickle(filterSetting)
 
-    message = 'Biggest Losers Last Hour' + '\n\n'
-    message += loseData['gainers_1h'] + '\n\n'
-    message = 'Biggest Losers Last 24 Hours' + '\n\n'
-    message += loseData['gainers_24h'] + '\n\n'
-    message = 'Biggest Losers Last 7 Days' + '\n\n'
-    message += loseData['gainers_7d'] + '\n\n'
+    message = 'Biggest Losers Last Hour {}'.format(
+        returnFilterMessage(filterSetting)) + '\n\n'
+    message += loseData['losers_1h'] + '\n\n'
+
+    message += 'Biggest Losers Last 24 Hours {}'.format(
+        returnFilterMessage(filterSetting)) + '\n\n'
+    message += loseData['losers_24h'] + '\n\n'
+
+    message += 'Biggest Losers Last 7 Days {}'.format(
+        returnFilterMessage(filterSetting)) + '\n\n'
+    message += loseData['losers_7d'] + '\n\n'
 
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
