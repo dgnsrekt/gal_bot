@@ -1,5 +1,6 @@
 from logger import getLogger
-from gettoken import GetToken, GetDonateAddresses
+from gettoken import GetToken
+from donate import getDonateLink
 
 import telegram
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
@@ -21,6 +22,12 @@ KEYBOARD_SETTINGS = [telegram.KeyboardButton('/(A)'),
                      telegram.KeyboardButton('/(D)'),
                      telegram.KeyboardButton('/(E)'),
                      telegram.KeyboardButton('/(N)')]
+
+KEYBOARD_DONATE = [telegram.KeyboardButton('/BTC'),
+                   telegram.KeyboardButton('/BCH'),
+                   telegram.KeyboardButton('/ETH'),
+                   telegram.KeyboardButton('/ETC'),
+                   telegram.KeyboardButton('/ZEC')]
 
 
 def getUserID(update):
@@ -191,7 +198,44 @@ def losers(bot, update):
 
 
 def donate(bot, update):
-    message = GetDonateAddresses()
+    message = 'BTC ' + 'BCH ' + 'ETH ' + 'ETC ' + 'ZEC ' + '\n'
+    message += 'Donate if you like/use the bot.'
+
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_DONATE)
+
+
+def getBTC(bot, update):
+    message = getDonateLink('BTC')
+    _logger.info('{}:{} maybe donating BTC'.format(
+        getUserID(update), getUserName(bot, update)))
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
+
+
+def getBCH(bot, update):
+    message = getDonateLink('BCH')
+    _logger.info('{}:{} maybe donating BCH'.format(
+        getUserID(update), getUserName(bot, update)))
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
+
+
+def getETH(bot, update):
+    message = getDonateLink('ETH')
+    _logger.info('{}:{} maybe donating ETH'.format(
+        getUserID(update), getUserName(bot, update)))
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
+
+
+def getETC(bot, update):
+    message = getDonateLink('ETC')
+    _logger.info('{}:{} maybe donating ETC'.format(
+        getUserID(update), getUserName(bot, update)))
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
+
+
+def getZEC(bot, update):
+    message = getDonateLink('ZEC')
+    _logger.info('{}:{} maybe donating ZEC'.format(
+        getUserID(update), getUserName(bot, update)))
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
 
@@ -209,6 +253,12 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('help', menu))
 
     updater.dispatcher.add_handler(CommandHandler('donate', donate))
+
+    updater.dispatcher.add_handler(CommandHandler('BTC', getBTC))
+    updater.dispatcher.add_handler(CommandHandler('BCH', getBCH))
+    updater.dispatcher.add_handler(CommandHandler('ETH', getETH))
+    updater.dispatcher.add_handler(CommandHandler('ETC', getETC))
+    updater.dispatcher.add_handler(CommandHandler('ZEC', getZEC))
 
     updater.dispatcher.add_handler(CommandHandler('gainers', gainers))
     updater.dispatcher.add_handler(CommandHandler('losers', losers))
