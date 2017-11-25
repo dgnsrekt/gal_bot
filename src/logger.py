@@ -63,3 +63,6 @@ LOGGER = generateLogger()
 def getLogger():
     """Returns a logger instance."""
     return LOGGER
+
+
+# TODO: change datetimes to date
