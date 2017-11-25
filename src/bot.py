@@ -1,5 +1,5 @@
 from logger import getLogger
-from gettoken import GetToken
+from gettoken import GetToken, GetDonateAddresses
 
 import telegram
 from telegram.ext import Updater, CommandHandler
@@ -10,16 +10,16 @@ from scraper import getDataFromPickle
 _logger = getLogger()
 
 
-buttons = [telegram.KeyboardButton('/settings'),
-           telegram.KeyboardButton('/gainers'),
-           telegram.KeyboardButton('/losers')]
+KEYBOARD_MAIN = [telegram.KeyboardButton('/settings'),
+                 telegram.KeyboardButton('/gainers'),
+                 telegram.KeyboardButton('/losers')]
 
-buttons2 = [telegram.KeyboardButton('/(A)'),
-            telegram.KeyboardButton('/(B)'),
-            telegram.KeyboardButton('/(C)'),
-            telegram.KeyboardButton('/(D)'),
-            telegram.KeyboardButton('/(E)'),
-            telegram.KeyboardButton('/(N)')]
+KEYBOARD_SETTINGS = [telegram.KeyboardButton('/(A)'),
+                     telegram.KeyboardButton('/(B)'),
+                     telegram.KeyboardButton('/(C)'),
+                     telegram.KeyboardButton('/(D)'),
+                     telegram.KeyboardButton('/(E)'),
+                     telegram.KeyboardButton('/(N)')]
 
 
 def getUserID(update):
@@ -43,43 +43,40 @@ def getUserSettingFromDatabase(bot, update):
     return UserSettings.getUserSettings(chat_id=getUserID(update))
 
 
-def start(bot, update):
-    replymarkup = telegram.ReplyKeyboardMarkup(
-        [buttons], resize_keyboard=True, one_time_keyboard=True)
-
-    message = 'Welcome to the CMC Gainers and Losers bot.\n'
-    message += '/start - reset settings\n' + '/menu\t-\tMain Menu\n'
+def returnBasicMessage():
+    message = '/start - reset settings\n' + '/menu\t-\tMain Menu\n'
     message += '/settings\t-\tFilter Settings\n' + '/gainers\t-\t1h, 24h, 7D\n'
     message += '/losers\t-\t1h, 24h, 7D\n'
-    message += 'Donate BTC 15RY6hGpVhqxB2pDaq551psxWQjrTn8HFj'
-    addUserToDatabase(bot, update)
+    message += '/Donate\t-\tIf you like the bot.'
+    return message
 
+
+def sendMessageWithKeyboard(bot, update, message, keyboard):
+    replymarkup = telegram.ReplyKeyboardMarkup(
+        [keyboard], resize_keyboard=True, one_time_keyboard=True)
     bot.sendMessage(getUserID(update), text=message,
                     reply_markup=replymarkup)
+
+
+def start(bot, update):
+    message = 'Welcome to the CMC Gainers and Losers bot.\n'
+    message += returnBasicMessage()
+
+    addUserToDatabase(bot, update)
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
 
 def settings(bot, update):
-    replymarkup = telegram.ReplyKeyboardMarkup(
-        [buttons2], resize_keyboard=True, one_time_keyboard=True)
-
     message = 'Change Minimum Volume Filter\nA:$25,000\nB:$100,000\n'
     message += 'C:$250,000\nD:$500,000\nE:$1,000,000\nN:NoFilter'
 
-    bot.sendMessage(getUserID(update), text=message,
-                    reply_markup=replymarkup)
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_SETTINGS)
 
 
 def menu(bot, update):
-    replymarkup = telegram.ReplyKeyboardMarkup(
-        [buttons], resize_keyboard=True, one_time_keyboard=True)
+    message = returnBasicMessage()
 
-    message = '/menu\t-\tMain Menu\n'
-    message += '/settings\t-\tFilter Settings\n' + '/gainers\t-\t1h, 24h, 7D\n'
-    message += '/losers\t-\t1h, 24h, 7D\n'
-    message += 'Donate BTC 15RY6hGpVhqxB2pDaq551psxWQjrTn8HFj'
-
-    bot.sendMessage(getUserID(update), text=message,
-                    reply_markup=replymarkup)
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
 
 def baseFilter(bot, update, log_str, message, filter_setting):
@@ -87,10 +84,7 @@ def baseFilter(bot, update, log_str, message, filter_setting):
     _logger.info(log_str.format(
         getUserID(update), getUserName(bot, update)))
 
-    replymarkup = telegram.ReplyKeyboardMarkup(
-        [buttons], resize_keyboard=True, one_time_keyboard=True)
-
-    bot.sendMessage(getUserID(update), text=message, reply_markup=replymarkup)
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
 
 def changeFilterA(bot, update):
@@ -139,7 +133,8 @@ def gainers(bot, update):
     message += gainData['gainers_24h'] + '\n\n'
     message += 'Biggest Gainers Last 7 Days' + '\n\n'
     message += gainData['gainers_7d'] + '\n\n'
-    bot.sendMessage(getUserID(update), text=message)
+
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
 
 def losers(bot, update):
@@ -152,7 +147,8 @@ def losers(bot, update):
     message += loseData['gainers_24h'] + '\n\n'
     message = 'Biggest Losers Last 7 Days' + '\n\n'
     message += loseData['gainers_7d'] + '\n\n'
-    bot.sendMessage(getUserID(update), text=message)
+
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
 
 def main():
