@@ -2,6 +2,7 @@ from logger import getLogger
 import pickle
 import pandas as pd
 from os import path, makedirs
+from decimal import Decimal
 
 _logger = getLogger()
 
@@ -52,6 +53,7 @@ def parseAndCleanAllData():
 
 def filterByVolume(data_frame, min_volume=25000):
     df = data_frame.copy()
+    df['Price'] = df['Price'].astype(Decimal)
     return df[data_frame.Volume > min_volume]
 
 
@@ -66,7 +68,7 @@ def getFilteredVolumeData():
     volume_1000000 = {}
 
     for key, df in temp_df.items():
-        columnFormat = ['#', 'Symbol', 'Pct', 'Volume', 'Price']
+        columnFormat = ['#', 'Symbol', 'Price', 'Pct']
 
         volume_NF[key] = filterByVolume(
             df, min_volume=0).to_string(index=False, columns=columnFormat)
@@ -118,7 +120,7 @@ if __name__ == '__main__':
     try:
         makedirs(PICKLE_PATH)
     except FileExistsError:
-        _logger.info('{} already exists.'.format(PICKLE_PATH))
+        _logger.info('{} folder already exists.'.format(PICKLE_PATH))
 
     data = getFilteredVolumeData()
     sendDataToPickle(data)
