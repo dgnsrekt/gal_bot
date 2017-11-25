@@ -45,11 +45,11 @@ def getUserSettingFromDatabase(bot, update):
 
 
 def returnBasicMessage():
-    message = '/start       - Resets filter settings and initializes bot.\n'
+    message = '/start       - Initializes bot.\n'
     message += '/menu     - Main Menu\n'
     message += '/settings  - Filter Settings\n'
-    message += '/gainers   - Shows 1h, 24h, 7D biggest gainers.\n'
-    message += '/losers     - Shows 1h, 24h, 7D biggest losers.\n'
+    message += '/gainers   - Shows 1h, 24h, 7D gainers.\n'
+    message += '/losers     - Shows 1h, 24h, 7D losers.\n'
     message += '/donate   - If you love the bot.'
     return message
 
@@ -62,7 +62,7 @@ def sendMessageWithKeyboard(bot, update, message, keyboard):
 
 
 def start(bot, update):
-    message = 'Welcome to the Biggest Gainers and Losers bot.\n'
+    message = 'Welcome to the Gainers/Losers bot.\n'
     message += returnBasicMessage()
 
     addUserToDatabase(bot, update)
@@ -209,6 +209,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('(E)', changeFilterE))
     updater.dispatcher.add_handler(CommandHandler('(N)', changeFilterN))
 
+    _logger.info('bot running...')
     updater.start_polling()
     updater.idle()
 
