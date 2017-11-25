@@ -1,5 +1,5 @@
 from logging import basicConfig, INFO, StreamHandler, getLogger
-from datetime import datetime
+from datetime import date, datetime
 from os import listdir, makedirs, path, remove
 from sys import stdout
 
@@ -20,13 +20,13 @@ def createLogFolder():
 
 def generateLogNameFromDateTime():
     """Generates the name of a log file from the current time."""
-    return 'LOGFILE_({}).log'.format(datetime.now().isoformat().split(
+    return 'LOGFILE_({}).log'.format(date.today().isoformat().split(
         '.')[0].replace('T', '_'))
 
 
 def getDateTimeObjectFromFileName(file):
     """Parses datetime object from a file name."""
-    return datetime.strptime(file, 'LOGFILE_(%Y-%m-%d_%H:%M:%S).log')
+    return datetime.strptime(file, 'LOGFILE_(%Y-%m-%d).log')
 
 
 def deleteOldLogs():
@@ -64,5 +64,9 @@ def getLogger():
     """Returns a logger instance."""
     return LOGGER
 
-
-# TODO: change datetimes to date
+if __name__ == '__main__':
+    LOGGER.debug('testing debug...')
+    LOGGER.info('testing info...')
+    LOGGER.warning('testing warning...')
+    LOGGER.error('testing error...')
+    LOGGER.critical('testing critical...')
