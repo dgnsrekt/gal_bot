@@ -58,7 +58,7 @@ def sendMessageWithKeyboard(bot, update, message, keyboard):
     replymarkup = telegram.ReplyKeyboardMarkup(
         [keyboard], resize_keyboard=True, one_time_keyboard=True)
     bot.sendMessage(getUserID(update), text=message,
-                    reply_markup=replymarkup)
+                    reply_markup=replymarkup, parse_mode=telegram.ParseMode.HTML)
 
 
 def start(bot, update):
@@ -70,8 +70,13 @@ def start(bot, update):
 
 
 def settings(bot, update):
-    message = 'Change Minimum Volume Filter\nA:$25,000\nB:$100,000\n'
-    message += 'C:$250,000\nD:$500,000\nE:$1,000,000\nN:NoFilter'
+    message = 'Change Minimum 24hr Volume Filter\n'
+    message += 'A: > $25,000\n'
+    message += 'B: > $100,000\n'
+    message += 'C: > $250,000\n'
+    message += 'D: > $500,000\n'
+    message += 'E: > $1,000,000\n'
+    message += 'N:   NoFilter'
 
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_SETTINGS)
 
@@ -136,21 +141,25 @@ def returnFilterMessage(filterSetting):
     return message[filterSetting]
 
 
+def htmlFixedMessage(message):
+    return '<pre>{}</pre>'.format(message)
+
+
 def gainers(bot, update):
     filterSetting = getUserSettingFromDatabase(bot, update)
     gainData = getDataFromPickle(filterSetting)
 
     message = 'Biggest Gainers Last Hour {}'.format(
         returnFilterMessage(filterSetting)) + '\n\n'
-    message += gainData['gainers_1h'] + '\n\n'
+    message += htmlFixedMessage(gainData['gainers_1h']) + '\n\n'
 
     message += 'Biggest Gainers Last 24 Hours {}'.format(
         returnFilterMessage(filterSetting)) + '\n\n'
-    message += gainData['gainers_24h'] + '\n\n'
+    message += htmlFixedMessage(gainData['gainers_24h']) + '\n\n'
 
     message += 'Biggest Gainers Last 7 Days {}'.format(
         returnFilterMessage(filterSetting)) + '\n\n'
-    message += gainData['gainers_7d'] + '\n\n'
+    message += htmlFixedMessage(gainData['gainers_7d']) + '\n\n'
 
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
@@ -161,16 +170,21 @@ def losers(bot, update):
 
     message = 'Biggest Losers Last Hour {}'.format(
         returnFilterMessage(filterSetting)) + '\n\n'
-    message += loseData['losers_1h'] + '\n\n'
+    message += htmlFixedMessage(loseData['losers_1h']) + '\n\n'
 
     message += 'Biggest Losers Last 24 Hours {}'.format(
         returnFilterMessage(filterSetting)) + '\n\n'
-    message += loseData['losers_24h'] + '\n\n'
+    message += htmlFixedMessage(loseData['losers_24h']) + '\n\n'
 
     message += 'Biggest Losers Last 7 Days {}'.format(
         returnFilterMessage(filterSetting)) + '\n\n'
-    message += loseData['losers_7d'] + '\n\n'
+    message += htmlFixedMessage(loseData['losers_7d']) + '\n\n'
 
+    sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
+
+
+def donate(bot, update):
+    message = GetDonateAddresses()
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
 
@@ -181,6 +195,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CommandHandler('settings', settings))
     updater.dispatcher.add_handler(CommandHandler('menu', menu))
+    updater.dispatcher.add_handler(CommandHandler('donate', donate))
 
     updater.dispatcher.add_handler(CommandHandler('gainers', gainers))
     updater.dispatcher.add_handler(CommandHandler('losers', losers))
