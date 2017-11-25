@@ -2,7 +2,7 @@ from logger import getLogger
 from gettoken import GetToken, GetDonateAddresses
 
 import telegram
-from telegram.ext import Updater, CommandHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 
 from model import UserSettings, createTables
 from scraper import getDataFromPickle
@@ -44,13 +44,18 @@ def getUserSettingFromDatabase(bot, update):
     return UserSettings.getUserSettings(chat_id=getUserID(update))
 
 
-def returnBasicMessage():
-    message = '/start       - Initializes bot.\n'
+def returnBasicMessage(bot, update):
+    filterSetting = getUserSettingFromDatabase(bot, update)
+
+    message = 'Please use the following commands.\n\n'
+    message += '/start       - Initializes bot.\n'
     message += '/menu     - Main Menu\n'
     message += '/settings  - Filter Settings\n'
     message += '/gainers   - Shows 1h, 24h, 7D gainers.\n'
     message += '/losers     - Shows 1h, 24h, 7D losers.\n'
-    message += '/donate   - If you love the bot.'
+    message += '/donate   - If you love the bot.\n\n'
+    message += 'Filter Set to: {}'.format(returnFilterMessage(filterSetting))
+
     return message
 
 
@@ -63,7 +68,7 @@ def sendMessageWithKeyboard(bot, update, message, keyboard):
 
 def start(bot, update):
     message = 'Welcome to the Gainers/Losers bot.\n'
-    message += returnBasicMessage()
+    message += returnBasicMessage(bot, update)
 
     addUserToDatabase(bot, update)
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
@@ -82,7 +87,7 @@ def settings(bot, update):
 
 
 def menu(bot, update):
-    message = returnBasicMessage()
+    message = returnBasicMessage(bot, update)
 
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
@@ -190,6 +195,10 @@ def donate(bot, update):
     sendMessageWithKeyboard(bot, update, message, KEYBOARD_MAIN)
 
 
+def error(bot, update, error):
+    _logger.warning('Update {} caused error {}'.format(update, error))
+
+
 def main():
     createTables()
     updater = Updater(GetToken())
@@ -197,6 +206,8 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CommandHandler('settings', settings))
     updater.dispatcher.add_handler(CommandHandler('menu', menu))
+    updater.dispatcher.add_handler(CommandHandler('help', menu))
+
     updater.dispatcher.add_handler(CommandHandler('donate', donate))
 
     updater.dispatcher.add_handler(CommandHandler('gainers', gainers))
@@ -209,7 +220,12 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('(E)', changeFilterE))
     updater.dispatcher.add_handler(CommandHandler('(N)', changeFilterN))
 
+    updater.dispatcher.add_handler(MessageHandler(Filters.text, menu))
+
+    updater.dispatcher.add_error_handler(error)
+
     _logger.info('bot running...')
+    _logger.info('press (ctrl + C) to stop.')
     updater.start_polling()
     updater.idle()
 
