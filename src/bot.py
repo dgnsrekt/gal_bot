@@ -143,7 +143,7 @@ def returnFilterMessage(filterSetting):
 
 def htmlFixedMessage(message):
     if 'Empty DataFrame' not in message:
-        return '<pre>{}</pre>'.format(message.replace('Pct', '% Change'))
+        return '<pre>{}</pre>'.format(message.replace('Pct', '%Chg'))
     return '<pre>No Data Avaliable</pre>'
 
 
