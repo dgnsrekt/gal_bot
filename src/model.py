@@ -52,3 +52,6 @@ def timeNow():
 
 def createTables():
     db.create_tables([UserSettings], True)
+
+if __name__ == '__main__':
+    createTables()
