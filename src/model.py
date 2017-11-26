@@ -55,7 +55,7 @@ class UserSettings(BaseModel):
         except UserSettings.DoesNotExist:
             _logger.info(
                 'User {} doesnot exist in database.'.format(kwargs['chat_id']))
-            UserSettings.addUser(**kwargs)
+            UserSettings.addUser(filter_settings='N', **kwargs)
             return UserSettings.get(UserSettings.chat_id == kwargs['chat_id']).filter_settings
 
 
