@@ -4,3 +4,5 @@ src/__pycache__/
 src/logs/
 src/pickles/
 src/DONATE
+src/cert.pem
+src/private.key
