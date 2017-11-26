@@ -61,6 +61,7 @@ def returnBasicMessage(bot, update):
     message += '/gainers   - Shows 1h, 24h, 7D gainers.\n'
     message += '/losers     - Shows 1h, 24h, 7D losers.\n'
     message += '/donate   - If you love the bot.\n\n'
+    message += 'Send Questions/Feeback/Cryptobot ideas to @SOG31.\n\n'
     message += 'Filter Set to: {}'.format(returnFilterMessage(filterSetting))
 
     return message
