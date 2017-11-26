@@ -1,5 +1,5 @@
 from logger import getLogger
-from gettoken import GetToken
+from gettoken import GetToken, GetPrivate, GetCert
 from donate import getDonateLink
 
 import telegram
@@ -276,7 +276,12 @@ def main():
 
     _logger.info('bot running...')
     _logger.info('press (ctrl + C) to stop.')
-    updater.start_polling()
+    updater.start_webhook(listen='0.0.0.0',
+                          port=80,
+                          url_path='TOKEN',
+                          key=GetPrivate(),
+                          cert=GetCert(),
+                          webhook_url='https://galbot.moonordie.com:80/TOKEN')
     updater.idle()
 
 
