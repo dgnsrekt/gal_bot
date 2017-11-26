@@ -43,13 +43,18 @@ class UserSettings(BaseModel):
             query.execute()
             _logger.info(
                 'User {} updated in database.'.format(kwargs['chat_id']))
-        except model.UserSettingsDoesNotExist:
+        except UserSettings.DoesNotExist:
             _logger.info(
                 'User {} doesnot exist in database.'.format(kwargs['chat_id']))
             UserSettings.addUser(**kwargs)
 
     def getUserSettings(**kwargs):
-        return UserSettings.get(UserSettings.chat_id == kwargs['chat_id']).filter_settings
+	try:
+            return UserSettings.get(UserSettings.chat_id == kwargs['chat_id']).filter_settings
+        except UserSettings.DoesNotExist:
+            _logger.info(
+                'User {} doesnot exist in database.'.format(kwargs['chat_id']))
+            UserSettings.addUser(**kwargs)
 
 
 def timeNow():
