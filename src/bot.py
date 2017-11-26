@@ -100,10 +100,7 @@ def menu(bot, update):
 
 
 def baseFilter(bot, update, log_str, message, filter_setting):
-    try:
-        updateUserDatbase(bot, update, filter_setting)
-    except:
-        addUserToDatabase(bot, update)
+    updateUserDatbase(bot, update, filter_setting)
     _logger.info(log_str.format(
         getUserID(update), getUserName(bot, update)))
 
